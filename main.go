@@ -182,6 +182,17 @@ func main() {
 		os.Exit(1)
 	}
 
+	// If question starts with '@', read from file
+	if strings.HasPrefix(*question, "@") {
+		filename := (*question)[1:] // Remove the '@' prefix
+		content, err := os.ReadFile(filename)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error reading question file %s: %v\n", filename, err)
+			os.Exit(1)
+		}
+		*question = strings.TrimSpace(string(content))
+	}
+
 	if *keepIf != "yes" && *keepIf != "no" {
 		fmt.Fprintf(os.Stderr, "Error: --keep-if must be 'yes' or 'no'\n")
 		os.Exit(1)
